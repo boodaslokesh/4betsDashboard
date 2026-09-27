@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 BET'S</title>
+    <style>
+        :root {
+            --bg-main: #0b0f19;
+            --bg-panel: #111827;
+            --bg-card: #162032;
+            --bg-input: #1f293d;
+            --border-color: #27354f;
+            --accent-cyan: #00e5ff;
+            --accent-green: #00e676;
+            --accent-red: #ff5252;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* Top Navigation Header Tabs */
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+
+        .nav-header h1 {
+            font-size: 13px;
+            margin: 0;
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .tab-btn {
+            background-color: var(--bg-input);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 5px 12px;
+            font-size: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            border-color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-cyan);
+            color: #070b14;
+            border-color: var(--accent-cyan);
+        }
+
+        /* Page Section Wrapper */
+        .page-section {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .page-section.active {
+            display: flex;
+        }
+
+        .control-panel, .independent-strategy-box, .table-section {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .independent-strategy-box {
+            background: linear-gradient(135deg, #111827 0%, #162032 100%);
+            border: 1px solid var(--accent-green);
+            padding: 10px 12px;
+        }
+
+        .control-row {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: flex-end;
+            width: 100%;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+            min-width: 65px;
+        }
+
+        .filter-group.time-group {
+            flex: 2;
+            min-width: 130px;
+        }
+
+        .filter-group label {
+            font-size: 8px;
+            letter-spacing: 0.3px;
+            color: var(--text-muted);
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        input, select {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 3px 4px;
+            border-radius: 3px;
+            font-size: 10px;
+            outline: none;
+            width: 100%;
+            height: 26px;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .time-select-row {
+            display: flex;
+            gap: 2px;
+        }
+
+        .time-select-row select {
+            padding: 2px 1px;
+            font-size: 9px;
+            text-align: center;
+        }
+
+        .btn-sync {
+            background: linear-gradient(90deg, #2dd4bf 0%, #0ea5e9 100%);
+            color: #070b14;
+            border: none;
+            font-weight: bold;
+            padding: 0 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            height: 26px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-sync:hover {
+            opacity: 0.9;
+        }
+
+        .strategy-narrative {
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .strategy-narrative strong {
+            color: var(--accent-cyan);
+        }
+
+        .table-section h3 {
+            margin: 0;
+            font-size: 11px;
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            overflow-x: auto;
+            display: block;
+        }
+
+        th, td {
+            padding: 6px 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: var(--bg-input);
+            color: var(--text-muted);
+            font-size: 8px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.01);
+        }
+
+        .no-data {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 12px;
+        }
+
+        .positive {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .negative {
+            color: var(--accent-red);
+            font-weight: bold;
+        }
+
+        .loading-overlay {
+            font-size: 10px;
+            color: var(--accent-cyan);
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 4px;
+            align-self: center;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    
+    <!-- Top Navigation Header -->
+    <div class="nav-header">
+        <h1>Optimal Strategy Dashboard</h1>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchDataSource('jetx')">JetX Records (jetxnewSep.csv)</button>
+            <button class="tab-btn" onclick="switchDataSource('aviator')">Aviator Records (aviator.csv)</button>
+        </div>
+    </div>
+
+    <!-- ================= PAGE 1: JETX (jetxnewSep.csv) ================= -->
+    <div id="page-jetx" class="page-section active">
+        <!-- 1. Independent Strategy Box -->
+        <div class="independent-strategy-box">
+            <div class="strategy-narrative" id="jetx-independentStrategyText">
+                Loading optimal parameters from JetX data logs...
+            </div>
+        </div>
+
+        <!-- 2. Control Panel -->
+        <div class="control-panel">
+            <div class="control-row">
+                <div class="filter-group">
+                    <label for="jetx-bet1Input">Bet 1</label>
+                    <input type="number" id="jetx-bet1Input" value="1">
+                </div>
+                <div class="filter-group">
+                    <label for="jetx-bet2Input">Bet 2</label>
+                    <input type="number" id="jetx-bet2Input" value="1">
+                </div>
+                <div class="filter-group">
+                    <label for="jetx-bet3Input">Bet 3</label>
+                    <input type="number" id="jetx-bet3Input" value="1">
+                </div>
+                <div class="filter-group">
+                    <label for="jetx-bet4Input">Bet 4</label>
+                    <input type="number" id="jetx-bet4Input" value="1">
+                </div>
+            </div>
+
+            <div class="control-row" style="margin-top: 4px;">
+                <div class="filter-group">
+                    <label for="jetx-plTargetInput">Target</label>
+                    <input type="number" id="jetx-plTargetInput" value="300">
+                </div>
+                <div class="filter-group time-group">
+                    <label>From (HH:MM:SS)</label>
+                    <div class="time-select-row">
+                        <select id="jetx-fromHour"></select>
+                        <select id="jetx-fromMinute"></select>
+                        <select id="jetx-fromSecond"></select>
+                    </div>
+                </div>
+                <div class="filter-group time-group">
+                    <label>To (HH:MM:SS)</label>
+                    <div class="time-select-row">
+                        <select id="jetx-toHour"></select>
+                        <select id="jetx-toMinute"></select>
+                        <select id="jetx-toSecond"></select>
+                    </div>
+                </div>
+                <button class="btn-sync" onclick="scheduleCalculation('jetx')">Run Analysis</button>
+                <button class="btn-sync" style="background: var(--border-color); color: var(--text-main);" onclick="resetTimeFilter('jetx')">Reset</button>
+                <span id="jetx-loadingIndicator" class="loading-overlay" style="display:none;">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-section">
+            <h3>JetX - Peak Combined Profit & Drawdown For All Dates</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Peak Combined Profit</th>
+                        <th>Peak Profit Time</th>
+                        <th>Max Drawdown Peak</th>
+                        <th>Target Amount Crossed</th>
+                        <th>Max Drawdown Target</th>
+                        <th>Target Cross Time</th>
+                        <th>Target Status</th>
+                        <th>Cumulative Combined P/L</th>
+                        <th>Total Cumulative Combined P/L</th>
+                    </tr>
+                </thead>
+                <tbody id="jetx-peakDrawdownTableBody">
+                    <tr><td colspan="10" class="no-data">Run analysis to view detailed metrics</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- ================= PAGE 2: AVIATOR (aviator.csv) ================= -->
+    <div id="page-aviator" class="page-section">
+        <!-- 1. Independent Strategy Box -->
+        <div class="independent-strategy-box">
+            <div class="strategy-narrative" id="aviator-independentStrategyText">
+                Loading optimal parameters from Aviator data logs...
+            </div>
+        </div>
+
+        <!-- 2. Control Panel -->
+        <div class="control-panel">
+            <div class="control-row">
+                <div class="filter-group">
+                    <label for="aviator-bet1Input">Bet 1</label>
+                    <input type="number" id="aviator-bet1Input" value="1">
+                </div>
+                <div class="filter-group">
+                    <label for="aviator-bet2Input">Bet 2</label>
+                    <input type="number" id="aviator-bet2Input" value="1">
+                </div>
+                <div class="filter-group">
+                    <label for="aviator-bet3Input">Bet 3</label>
+                    <input type="number" id="aviator-bet3Input" value="1">
+                </div>
+                <div class="filter-group">
+                    <label for="aviator-bet4Input">Bet 4</label>
+                    <input type="number" id="aviator-bet4Input" value="1">
+                </div>
+            </div>
+
+            <div class="control-row" style="margin-top: 4px;">
+                <div class="filter-group">
+                    <label for="aviator-plTargetInput">Target</label>
+                    <input type="number" id="aviator-plTargetInput" value="300">
+                </div>
+                <div class="filter-group time-group">
+                    <label>From (HH:MM:SS)</label>
+                    <div class="time-select-row">
+                        <select id="aviator-fromHour"></select>
+                        <select id="aviator-fromMinute"></select>
+                        <select id="aviator-fromSecond"></select>
+                    </div>
+                </div>
+                <div class="filter-group time-group">
+                    <label>To (HH:MM:SS)</label>
+                    <div class="time-select-row">
+                        <select id="aviator-toHour"></select>
+                        <select id="aviator-toMinute"></select>
+                        <select id="aviator-toSecond"></select>
+                    </div>
+                </div>
+                <button class="btn-sync" onclick="scheduleCalculation('aviator')">Run Analysis</button>
+                <button class="btn-sync" style="background: var(--border-color); color: var(--text-main);" onclick="resetTimeFilter('aviator')">Reset</button>
+                <span id="aviator-loadingIndicator" class="loading-overlay" style="display:none;">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-section">
+            <h3>Aviator - Peak Combined Profit & Drawdown For All Dates</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Peak Combined Profit</th>
+                        <th>Peak Profit Time</th>
+                        <th>Max Drawdown Peak</th>
+                        <th>Target Amount Crossed</th>
+                        <th>Max Drawdown Target</th>
+                        <th>Target Cross Time</th>
+                        <th>Target Status</th>
+                        <th>Cumulative Combined P/L</th>
+                        <th>Total Cumulative Combined P/L</th>
+                    </tr>
+                </thead>
+                <tbody id="aviator-peakDrawdownTableBody">
+                    <tr><td colspan="10" class="no-data">Run analysis to view detailed metrics</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // URLs for the two distinct REST data feeds
+    const JETX_CSV_URL = "https://attacks-vii-amend-interpreted.trycloudflare.com/jetxnewSep.csv";
+    const AVIATOR_CSV_URL = "https://attacks-vii-amend-interpreted.trycloudflare.com/aviator.csv"; // Update if different
+
+    const CURRENT_BALANCE_URL = "https://attacks-vii-amend-interpreted.trycloudflare.com/balance.txt";
+    const BET_STATUS_URL = "https://aviator-strategy-proxy-api-f1wq2z.5sc6y6-1.usa-e2.cloudhub.io/lokeshboodas/betStatus";
+
+    let datasets = {
+        jetx: { rows: [], timer: null },
+        aviator: { rows: [], timer: null }
+    };
+
+    function switchDataSource(sourceKey) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+
+        if (sourceKey === 'jetx') {
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.getElementById('page-jetx').classList.add('active');
+        } else {
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            document.getElementById('page-aviator').classList.add('active');
+        }
+    }
+
+    function initTimeDropdowns(prefix) {
+        const hours = Array.from({length: 24}, (_, i) => String(i).padStart(2, '0'));
+        const minutesSeconds = Array.from({length: 60}, (_, i) => String(i).padStart(2, '0'));
+
+        const populate = (id, arr, defaultVal) => {
+            const el = document.getElementById(`${prefix}-${id}`);
+            if (!el) return;
+            el.innerHTML = arr.map(val => `<option value="${val}" ${val === defaultVal ? 'selected' : ''}>${val}</option>`).join('');
+        };
+
+        populate('fromHour', hours, '00');
+        populate('fromMinute', minutesSeconds, '00');
+        populate('fromSecond', minutesSeconds, '00');
+
+        populate('toHour', hours, '23');
+        populate('toMinute', minutesSeconds, '59');
+        populate('toSecond', minutesSeconds, '59');
+    }
+
+    function getFromTime(prefix) {
+        const h = document.getElementById(`${prefix}-fromHour`).value || '00';
+        const m = document.getElementById(`${prefix}-fromMinute`).value || '00';
+        const s = document.getElementById(`${prefix}-fromSecond`).value || '00';
+        return `${h}:${m}:${s}`;
+    }
+
+    function getToTime(prefix) {
+        const h = document.getElementById(`${prefix}-toHour`).value || '23';
+        const m = document.getElementById(`${prefix}-toMinute`).value || '59';
+        const s = document.getElementById(`${prefix}-toSecond`).value || '59';
+        return `${h}:${m}:${s}`;
+    }
+
+    async function fetchCurrentBalance() {
+        try {
+            const response = await fetch(`${CURRENT_BALANCE_URL}?_t=${Date.now()}`);
+            if (!response.ok) throw new Error("Network response failed");
+            await response.json();
+        } catch (err) {
+            console.error("Error fetching balance:", err);
+        }
+    }
+
+    async function fetchBetStatus() {
+        try {
+            await fetch(`${BET_STATUS_URL}?_t=${Date.now()}`, {
+                headers: { 'ngrok-skip-browser-warning': 'true' }
+            });
+        } catch (err) {
+            console.error("Error fetching bet status:", err);
+        }
+    }
+
+    async function fetchCSVData(url, key) {
+        const loadingIndicator = document.getElementById(`${key}-loadingIndicator`);
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'inline-block';
+            loadingIndicator.innerText = "Downloading logs...";
+        }
+
+        try {
+            const response = await fetch(`${url}?_t=${Date.now()}`, {
+                headers: { 'ngrok-skip-browser-warning': 'true' }
+            });
+            if (!response.ok) throw new Error("Failed to fetch CSV logs");
+            processCSV(await response.text(), key);
+        } catch (err) {
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+            document.getElementById(`${key}-peakDrawdownTableBody`).innerHTML = `<tr><td colspan="10" class="no-data" style="color: var(--accent-red);">Connection error / Failed to load data</td></tr>`;
+        }
+    }
+
+    function convertTo24HourFormat(timeStr) {
+        if (!timeStr || timeStr === '-') return '00:00:00';
+        let cleanTime = timeStr.trim();
+        const upper = cleanTime.toUpperCase();
+        if (upper.includes('AM') || upper.includes('PM')) {
+            const parts = cleanTime.split(' ');
+            if (parts.length >= 2) {
+                const hms = parts[0].split(':');
+                let hours = parseInt(hms[0], 10) || 0;
+                const minutes = hms[1] || '00';
+                const seconds = hms[2] || '00';
+                const modifier = parts[1].toUpperCase();
+                if (modifier === 'PM' && hours < 12) hours += 12;
+                if (modifier === 'AM' && hours === 12) hours = 0;
+                return `${String(hours).padStart(2, '0')}:${minutes}:${seconds}`;
+            }
+        }
+        return cleanTime;
+    }
+
+    function formatTo12Hour(timeStr) {
+        if (!timeStr || timeStr === '-') return '-';
+        let clean = convertTo24HourFormat(timeStr);
+        const parts = clean.split(':');
+        let hours = parseInt(parts[0], 10) || 0;
+        const minutes = parts[1] || '00';
+        const seconds = parts[2] || '00';
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        return `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+    }
+
+    function processCSV(csvText, key) {
+        const lines = csvText.trim().split('\n').filter(l => l.trim().length > 0);
+        const rows = lines.length > 0 && lines[0].toLowerCase().includes('date') ? lines.slice(1) : lines;
+
+        datasets[key].rows = [];
+        rows.forEach((row, idx) => {
+            const parts = row.split(',').map(p => p.trim());
+            if (parts.length >= 3) {
+                let rawDate = parts[0].replace(/\\/g, '');
+                let standardizedDate = rawDate.replace(/\//g, '-');
+                let foundTime = '00:00:00';
+                let foundMultStr = parts[parts.length - 1].replace(/x/gi, '').trim();
+
+                if (parts[1] && (parts[1].includes(':') || parts[1].toUpperCase().includes('AM') || parts[1].toUpperCase().includes('PM'))) {
+                    foundTime = convertTo24HourFormat(parts[1]);
+                    foundMultStr = parts[2].replace(/x/gi, '').trim();
+                }
+
+                datasets[key].rows.push({
+                    roundNum: idx + 1,
+                    date: standardizedDate,
+                    time: foundTime,
+                    multiplier: parseFloat(foundMultStr) || 1.0
+                });
+            }
+        });
+
+        runCalculations(key);
+    }
+
+    function scheduleCalculation(key) {
+        const indicator = document.getElementById(`${key}-loadingIndicator`);
+        if (indicator) {
+            indicator.style.display = 'inline-block';
+            indicator.innerText = "Calculating...";
+        }
+        if (datasets[key].timer) clearTimeout(datasets[key].timer);
+        datasets[key].timer = setTimeout(() => { runCalculations(key); }, 150);
+    }
+
+    function resetTimeFilter(key) {
+        document.getElementById(`${key}-fromHour`).value = "00";
+        document.getElementById(`${key}-fromMinute`).value = "00";
+        document.getElementById(`${key}-fromSecond`).value = "00";
+        document.getElementById(`${key}-toHour`).value = "23";
+        document.getElementById(`${key}-toMinute`).value = "59";
+        document.getElementById(`${key}-toSecond`).value = "59";
+        scheduleCalculation(key);
+    }
+
+    function parseTimeToSeconds(timeStr) {
+        if (!timeStr || timeStr === '-') return 0;
+        try {
+            const clean = convertTo24HourFormat(timeStr);
+            const hms = clean.split(':');
+            return (parseInt(hms[0], 10) || 0) * 3600 + (parseInt(hms[1], 10) || 0) * 60 + (parseInt(hms[2], 10) || 0);
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    function runCalculations(key) {
+        const userBet1 = parseFloat(document.getElementById(`${key}-bet1Input`).value) || 0;
+        const userBet2 = parseFloat(document.getElementById(`${key}-bet2Input`).value) || 0;
+        const userBet3 = parseFloat(document.getElementById(`${key}-bet3Input`).value) || 0;
+        const userBet4 = parseFloat(document.getElementById(`${key}-bet4Input`).value) || 0;
+        const userEnteredTarget = parseFloat(document.getElementById(`${key}-plTargetInput`).value) || 300;
+
+        const fromSeconds = parseTimeToSeconds(getFromTime(key));
+        const toSeconds = parseTimeToSeconds(getToTime(key));
+
+        const dateMap = {};
+        datasets[key].rows.forEach(row => {
+            const rowSeconds = parseTimeToSeconds(row.time);
+            if (rowSeconds >= fromSeconds && rowSeconds <= toSeconds) {
+                if (!dateMap[row.date]) dateMap[row.date] = [];
+                dateMap[row.date].push(row);
+            }
+        });
+
+        let uniqueDates = Object.keys(dateMap);
+        if (uniqueDates.length === 0) {
+            document.getElementById(`${key}-peakDrawdownTableBody`).innerHTML = `<tr><td colspan="10" class="no-data">No data found in range.</td></tr>`;
+            if (document.getElementById(`${key}-loadingIndicator`)) document.getElementById(`${key}-loadingIndicator`).style.display = 'none';
+            return;
+        }
+
+        uniqueDates.sort((a, b) => {
+            const parseDateObj = (dStr) => {
+                const p = dStr.split('-');
+                if (p.length === 3) return new Date(`${p[2]}-${p[1]}-${p[0]}`);
+                return new Date(dStr);
+            };
+            return parseDateObj(b) - parseDateObj(a);
+        });
+
+        const multipliers = [1.5, 2, 3, 5, 10, 15, 20, 30, 50, 100];
+        let independentBest = null;
+        let highestPeakProfit = -Infinity;
+
+        for (let c1 of (userBet1 > 0 ? multipliers : [0])) {
+            for (let c2 of (userBet2 > 0 ? multipliers : [0])) {
+                for (let c3 of (userBet3 > 0 ? multipliers : [0])) {
+                    for (let c4 of (userBet4 > 0 ? multipliers : [0])) {
+                        let allPassed = true;
+                        let minPeakOnAnyDay = Infinity;
+
+                        for (let d = 0; d < uniqueDates.length; d++) {
+                            const rowObjs = dateMap[uniqueDates[d]];
+                            let cumP = 0, peakP = -Infinity, maxLock = -Infinity;
+
+                            for (let m = 0; m < rowObjs.length; m++) {
+                                let rP = 0;
+                                const val = rowObjs[m].multiplier;
+                                
+                                if (userBet1 > 0) { rP -= userBet1; if (val >= c1) rP += userBet1 * c1; }
+                                if (userBet2 > 0) { rP -= userBet2; if (val >= c2) rP += userBet2 * c2; }
+                                if (userBet3 > 0) { rP -= userBet3; if (val >= c3) rP += userBet3 * c3; }
+                                if (userBet4 > 0) { rP -= userBet4; if (val >= c4) rP += userBet4 * c4; }
+
+                                cumP += rP;
+                                if (cumP > peakP) peakP = cumP;
+                                let lock = peakP * 0.85;
+                                if (lock > maxLock) maxLock = lock;
+                            }
+
+                            if (maxLock <= 0) { allPassed = false; break; }
+                            if (peakP < minPeakOnAnyDay) minPeakOnAnyDay = peakP;
+                        }
+
+                        if (allPassed && minPeakOnAnyDay > highestPeakProfit) {
+                            highestPeakProfit = minPeakOnAnyDay;
+                            independentBest = { c1, c2, c3, c4, peakProfit: minPeakOnAnyDay };
+                        }
+                    }
+                }
+            }
+        }
+
+        const strategyBoxElem = document.getElementById(`${key}-independentStrategyText`);
+        if (independentBest) {
+            let descParts = [];
+            if (userBet1 > 0) descParts.push(`Bet 1 (${userBet1} @ ${independentBest.c1}x)`);
+            if (userBet2 > 0) descParts.push(`Bet 2 (${userBet2} @ ${independentBest.c2}x)`);
+            if (userBet3 > 0) descParts.push(`Bet 3 (${userBet3} @ ${independentBest.c3}x)`);
+            if (userBet4 > 0) descParts.push(`Bet 4 (${userBet4} @ ${independentBest.c4}x)`);
+
+            strategyBoxElem.innerHTML = `
+                Optimal Strategy: <strong>${descParts.join(', ')}</strong> yields a peak combined amount of <span class="positive">+${independentBest.peakProfit.toFixed(2)} (H)</span> with daily consistency!
+            `;
+        } else {
+            strategyBoxElem.innerHTML = `No consistent strategy configuration could be resolved with current active inputs. Try adjusting targets or time range.`;
+        }
+
+        let activeC1 = independentBest ? independentBest.c1 : 0;
+        let activeC2 = independentBest ? independentBest.c2 : 0;
+        let activeC3 = independentBest ? independentBest.c3 : 0;
+        let activeC4 = independentBest ? independentBest.c4 : 0;
+
+        let dateCalculations = [];
+
+        uniqueDates.forEach(dateStr => {
+            const rowObjs = dateMap[dateStr];
+            if (!rowObjs || rowObjs.length === 0) {
+                dateCalculations.push({ dateStr, isEmpty: true, cumulativeProfit: 0 });
+                return;
+            }
+
+            let cumulativeProfit = 0;
+            let peakCombinedProfit = -Infinity;
+            let peakDateTime = '-';
+            let peakRunningProfits = [];
+            let targetCrossTime = '-';
+            let targetCrossDrawdown = 0;
+            let amountCrossedValue = 0;
+            let hasCrossedTarget = false;
+            let runningMin = Infinity;
+
+            for (let m = 0; m < rowObjs.length; m++) {
+                let rP = 0;
+                const mult = rowObjs[m].multiplier;
+                if (userBet1 > 0) { rP -= userBet1; if (mult >= activeC1) rP += userBet1 * activeC1; }
+                if (userBet2 > 0) { rP -= userBet2; if (mult >= activeC2) rP += userBet2 * activeC2; }
+                if (userBet3 > 0) { rP -= userBet3; if (mult >= activeC3) rP += userBet3 * activeC3; }
+                if (userBet4 > 0) { rP -= userBet4; if (mult >= activeC4) rP += userBet4 * activeC4; }
+
+                cumulativeProfit += rP;
+
+                if (cumulativeProfit < runningMin) {
+                    runningMin = cumulativeProfit;
+                }
+
+                peakRunningProfits.push({
+                    time: rowObjs[m].time,
+                    profit: cumulativeProfit
+                });
+
+                if (!hasCrossedTarget && userEnteredTarget > 0 && cumulativeProfit >= userEnteredTarget) {
+                    hasCrossedTarget = true;
+                    targetCrossTime = rowObjs[m].time;
+                    targetCrossDrawdown = runningMin;
+                    amountCrossedValue = cumulativeProfit;
+                }
+
+                if (cumulativeProfit > peakCombinedProfit) {
+                    peakCombinedProfit = cumulativeProfit;
+                    peakDateTime = rowObjs[m].time;
+                }
+            }
+
+            if (!hasCrossedTarget) {
+                targetCrossDrawdown = runningMin;
+                amountCrossedValue = cumulativeProfit;
+            }
+
+            let maxDrawdownAtPeakTime = 0;
+            let peakMin = Infinity;
+            for (let i = 0; i < peakRunningProfits.length; i++) {
+                if (peakRunningProfits[i].profit < peakMin) {
+                    peakMin = peakRunningProfits[i].profit;
+                }
+                if (peakRunningProfits[i].time === peakDateTime) {
+                    maxDrawdownAtPeakTime = peakMin;
+                    break;
+                }
+            }
+
+            dateCalculations.push({
+                dateStr,
+                peakCombinedProfit,
+                peakDateTime: formatTo12Hour(peakDateTime),
+                maxDrawdownAtPeakTime,
+                amountCrossedValue,
+                targetCrossDrawdown,
+                targetCrossTime: formatTo12Hour(targetCrossTime),
+                hasCrossedTarget,
+                cumulativeProfit,
+                isEmpty: false
+            });
+        });
+
+        let runningTotalCumulativePL = 0;
+        let rawDateResults = [];
+
+        for (let i = dateCalculations.length - 1; i >= 0; i--) {
+            let r = dateCalculations[i];
+            if (!r.isEmpty) {
+                runningTotalCumulativePL += r.cumulativeProfit;
+                r.runningTotalCumulativePL = runningTotalCumulativePL;
+            } else {
+                r.runningTotalCumulativePL = runningTotalCumulativePL;
+            }
+            rawDateResults.push(r);
+        }
+
+        rawDateResults.reverse();
+
+        let totalTargetAmountCrossed = 0;
+        let validRows = rawDateResults.filter(r => !r.isEmpty);
+
+        let maxPeakCombined = -Infinity, minPeakCombined = Infinity;
+        let maxDDPeak = -Infinity, minDDPeak = Infinity;
+        let maxCrossed = -Infinity, minCrossed = Infinity;
+        let maxDDTarget = -Infinity, minDDTarget = Infinity;
+        let maxCumPL = -Infinity, minCumPL = Infinity;
+        let maxTotCumPL = -Infinity, minTotCumPL = Infinity;
+
+        validRows.forEach(r => {
+            totalTargetAmountCrossed += r.amountCrossedValue;
+
+            if (r.peakCombinedProfit > maxPeakCombined) maxPeakCombined = r.peakCombinedProfit;
+            if (r.peakCombinedProfit < minPeakCombined) minPeakCombined = r.peakCombinedProfit;
+
+            let ddPeakVal = r.maxDrawdownAtPeakTime;
+            if (ddPeakVal > maxDDPeak) maxDDPeak = ddPeakVal;
+            if (ddPeakVal < minDDPeak) minDDPeak = ddPeakVal;
+
+            let crossedVal = r.amountCrossedValue;
+            if (crossedVal > maxCrossed) maxCrossed = crossedVal;
+            if (crossedVal < minCrossed) minCrossed = crossedVal;
+
+            let ddTargetVal = r.targetCrossDrawdown;
+            if (ddTargetVal > maxDDTarget) maxDDTarget = ddTargetVal;
+            if (ddTargetVal < minDDTarget) minDDTarget = ddTargetVal;
+
+            let cumVal = r.cumulativeProfit;
+            if (cumVal > maxCumPL) maxCumPL = cumVal;
+            if (cumVal < minCumPL) minCumPL = cumVal;
+
+            let totVal = r.runningTotalCumulativePL;
+            if (totVal > maxTotCumPL) maxTotCumPL = totVal;
+            if (totVal < minTotCumPL) minTotCumPL = totVal;
+        });
+
+        let tableHtml = '';
+
+        rawDateResults.forEach(r => {
+            if (r.isEmpty) {
+                tableHtml += `
+                    <tr>
+                        <td><strong>${r.dateStr}</strong></td>
+                        <td colspan="9" class="no-data">No data found in range.</td>
+                    </tr>
+                `;
+            } else {
+                const maxDrawdownPeakVal = r.maxDrawdownAtPeakTime < 0 ? Math.abs(r.maxDrawdownAtPeakTime).toFixed(2) : "0.00";
+                const maxDrawdownTargetVal = r.targetCrossDrawdown < 0 ? Math.abs(r.targetCrossDrawdown).toFixed(2) : "0.00";
+                const targetStatusText = r.hasCrossedTarget ? '<span class="positive">Reached</span>' : '<span class="negative">Not Reached</span>';
+                const amountCrossedClass = r.amountCrossedValue >= 0 ? 'positive' : 'negative';
+
+                let peakProfStr = `+${r.peakCombinedProfit.toFixed(2)}`;
+                if (r.peakCombinedProfit === maxPeakCombined) peakProfStr += " (H)";
+                if (r.peakCombinedProfit === minPeakCombined) peakProfStr += " (L)";
+
+                let ddPeakStr = `-${maxDrawdownPeakVal}`;
+                if (r.maxDrawdownAtPeakTime === minDDPeak) ddPeakStr += " (L)";
+                if (r.maxDrawdownAtPeakTime === maxDDPeak) ddPeakStr += " (H)";
+
+                let crossedStr = `${r.amountCrossedValue >= 0 ? '+' : ''}${r.amountCrossedValue.toFixed(2)}`;
+                if (r.amountCrossedValue === maxCrossed) crossedStr += " (H)";
+                if (r.amountCrossedValue === minCrossed) crossedStr += " (L)";
+
+                let ddTargetStr = `-${maxDrawdownTargetVal}`;
+                if (r.targetCrossDrawdown === minDDTarget) ddTargetStr += " (L)";
+                if (r.targetCrossDrawdown === maxDDTarget) ddTargetStr += " (H)";
+
+                let cumStr = `${r.cumulativeProfit >= 0 ? '+' : ''}${r.cumulativeProfit.toFixed(2)}`;
+                if (r.cumulativeProfit === maxCumPL) cumStr += " (H)";
+                if (r.cumulativeProfit === minCumPL) cumStr += " (L)";
+
+                let totCumStr = `${r.runningTotalCumulativePL >= 0 ? '+' : ''}${r.runningTotalCumulativePL.toFixed(2)}`;
+                if (r.runningTotalCumulativePL === maxTotCumPL) totCumStr += " (H)";
+                if (r.runningTotalCumulativePL === minTotCumPL) totCumStr += " (L)";
+
+                tableHtml += `
+                    <tr>
+                        <td><strong>${r.dateStr}</strong></td>
+                        <td><span class="positive">${peakProfStr}</span></td>
+                        <td>${r.peakDateTime}</td>
+                        <td><span class="negative">${ddPeakStr}</span></td>
+                        <td><span class="${amountCrossedClass}">${crossedStr}</span></td>
+                        <td><span class="negative">${ddTargetStr}</span></td>
+                        <td>${r.targetCrossTime}</td>
+                        <td>${targetStatusText}</td>
+                        <td><span class="${r.cumulativeProfit >= 0 ? 'positive' : 'negative'}">${cumStr}</span></td>
+                        <td><span class="${r.runningTotalCumulativePL >= 0 ? 'positive' : 'negative'}">${totCumStr}</span></td>
+                    </tr>
+                `;
+            }
+        });
+
+        let totalCrossedClass = totalTargetAmountCrossed >= 0 ? 'positive' : 'negative';
+        tableHtml += `
+            <tr style="background-color: var(--bg-input); font-weight: bold;">
+                <td><strong>TOTAL</strong></td>
+                <td colspan="3"></td>
+                <td><span class="${totalCrossedClass}">${totalTargetAmountCrossed >= 0 ? '+' : ''}${totalTargetAmountCrossed.toFixed(2)}</span></td>
+                <td colspan="5"></td>
+            </tr>
+        `;
+
+        document.getElementById(`${key}-peakDrawdownTableBody`).innerHTML = tableHtml;
+        if (document.getElementById(`${key}-loadingIndicator`)) document.getElementById(`${key}-loadingIndicator`).style.display = 'none';
+    }
+
+    // Initialization on window load
+    window.addEventListener('DOMContentLoaded', () => {
+        initTimeDropdowns('jetx');
+        initTimeDropdowns('aviator');
+
+        fetchCSVData(JETX_CSV_URL, 'jetx');
+        fetchCSVData(AVIATOR_CSV_URL, 'aviator');
+
+        fetchCurrentBalance();
+        fetchBetStatus();
+        setInterval(fetchCurrentBalance, 3000);
+    });
+</script>
+</body>
+</html>
