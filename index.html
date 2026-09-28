@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4 BET'S</title>
+    <title>4 BET'S - JetX Turbo</title>
     <style>
         :root {
             --bg-main: #0b0f19;
@@ -39,7 +39,6 @@
             gap: 6px;
         }
 
-        /* Top Navigation Header Tabs */
         .nav-header {
             display: flex;
             justify-content: space-between;
@@ -57,43 +56,10 @@
             font-weight: 600;
         }
 
-        .nav-tabs {
-            display: flex;
-            gap: 6px;
-        }
-
-        .tab-btn {
-            background-color: var(--bg-input);
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            padding: 5px 12px;
-            font-size: 10px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-weight: bold;
-            transition: all 0.2s ease;
-        }
-
-        .tab-btn:hover {
-            color: var(--text-main);
-            border-color: var(--text-main);
-        }
-
-        .tab-btn.active {
-            background-color: var(--accent-cyan);
-            color: #070b14;
-            border-color: var(--accent-cyan);
-        }
-
-        /* Page Section Wrapper */
         .page-section {
-            display: none;
+            display: flex;
             flex-direction: column;
             gap: 6px;
-        }
-
-        .page-section.active {
-            display: flex;
         }
 
         .control-panel, .independent-strategy-box, .table-section {
@@ -266,25 +232,17 @@
 <body>
 <div class="dashboard-container">
     
-    <!-- Top Navigation Header -->
     <div class="nav-header">
-        <h1>Optimal Strategy Dashboard</h1>
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchDataSource('jetx')">JetX Records (jetxnewSep.csv)</button>
-            <button class="tab-btn" onclick="switchDataSource('aviator')">Aviator Records (aviator.csv)</button>
-        </div>
+        <h1>Optimal Strategy Dashboard - JetX (Turbo Mode)</h1>
     </div>
 
-    <!-- ================= PAGE 1: JETX (jetxnewSep.csv) ================= -->
     <div id="page-jetx" class="page-section active">
-        <!-- 1. Independent Strategy Box -->
         <div class="independent-strategy-box">
             <div class="strategy-narrative" id="jetx-independentStrategyText">
                 Loading optimal parameters from JetX data logs...
             </div>
         </div>
 
-        <!-- 2. Control Panel -->
         <div class="control-panel">
             <div class="control-row">
                 <div class="filter-group">
@@ -326,13 +284,12 @@
                         <select id="jetx-toSecond"></select>
                     </div>
                 </div>
-                <button class="btn-sync" onclick="scheduleCalculation('jetx')">Run Analysis</button>
+                <button class="btn-sync" onclick="manualRunAnalysis('jetx')">Run Analysis</button>
                 <button class="btn-sync" style="background: var(--border-color); color: var(--text-main);" onclick="resetTimeFilter('jetx')">Reset</button>
-                <span id="jetx-loadingIndicator" class="loading-overlay" style="display:none;">Loading...</span>
+                <span id="jetx-loadingIndicator" class="loading-overlay" style="display:none;">Updating...</span>
             </div>
         </div>
 
-        <!-- Table Section -->
         <div class="table-section">
             <h3>JetX - Peak Combined Profit & Drawdown For All Dates</h3>
             <table>
@@ -357,116 +314,16 @@
         </div>
     </div>
 
-
-    <!-- ================= PAGE 2: AVIATOR (aviator.csv) ================= -->
-    <div id="page-aviator" class="page-section">
-        <!-- 1. Independent Strategy Box -->
-        <div class="independent-strategy-box">
-            <div class="strategy-narrative" id="aviator-independentStrategyText">
-                Loading optimal parameters from Aviator data logs...
-            </div>
-        </div>
-
-        <!-- 2. Control Panel -->
-        <div class="control-panel">
-            <div class="control-row">
-                <div class="filter-group">
-                    <label for="aviator-bet1Input">Bet 1</label>
-                    <input type="number" id="aviator-bet1Input" value="1">
-                </div>
-                <div class="filter-group">
-                    <label for="aviator-bet2Input">Bet 2</label>
-                    <input type="number" id="aviator-bet2Input" value="1">
-                </div>
-                <div class="filter-group">
-                    <label for="aviator-bet3Input">Bet 3</label>
-                    <input type="number" id="aviator-bet3Input" value="1">
-                </div>
-                <div class="filter-group">
-                    <label for="aviator-bet4Input">Bet 4</label>
-                    <input type="number" id="aviator-bet4Input" value="1">
-                </div>
-            </div>
-
-            <div class="control-row" style="margin-top: 4px;">
-                <div class="filter-group">
-                    <label for="aviator-plTargetInput">Target</label>
-                    <input type="number" id="aviator-plTargetInput" value="300">
-                </div>
-                <div class="filter-group time-group">
-                    <label>From (HH:MM:SS)</label>
-                    <div class="time-select-row">
-                        <select id="aviator-fromHour"></select>
-                        <select id="aviator-fromMinute"></select>
-                        <select id="aviator-fromSecond"></select>
-                    </div>
-                </div>
-                <div class="filter-group time-group">
-                    <label>To (HH:MM:SS)</label>
-                    <div class="time-select-row">
-                        <select id="aviator-toHour"></select>
-                        <select id="aviator-toMinute"></select>
-                        <select id="aviator-toSecond"></select>
-                    </div>
-                </div>
-                <button class="btn-sync" onclick="scheduleCalculation('aviator')">Run Analysis</button>
-                <button class="btn-sync" style="background: var(--border-color); color: var(--text-main);" onclick="resetTimeFilter('aviator')">Reset</button>
-                <span id="aviator-loadingIndicator" class="loading-overlay" style="display:none;">Loading...</span>
-            </div>
-        </div>
-
-        <!-- Table Section -->
-        <div class="table-section">
-            <h3>Aviator - Peak Combined Profit & Drawdown For All Dates</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Peak Combined Profit</th>
-                        <th>Peak Profit Time</th>
-                        <th>Max Drawdown Peak</th>
-                        <th>Target Amount Crossed</th>
-                        <th>Max Drawdown Target</th>
-                        <th>Target Cross Time</th>
-                        <th>Target Status</th>
-                        <th>Cumulative Combined P/L</th>
-                        <th>Total Cumulative Combined P/L</th>
-                    </tr>
-                </thead>
-                <tbody id="aviator-peakDrawdownTableBody">
-                    <tr><td colspan="10" class="no-data">Run analysis to view detailed metrics</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
 </div>
 
 <script>
-    // URLs for the two distinct REST data feeds
     const JETX_CSV_URL = "https://attacks-vii-amend-interpreted.trycloudflare.com/jetxnewSep.csv";
-    const AVIATOR_CSV_URL = "https://attacks-vii-amend-interpreted.trycloudflare.com/aviator.csv"; // Update if different
-
     const CURRENT_BALANCE_URL = "https://attacks-vii-amend-interpreted.trycloudflare.com/balance.txt";
     const BET_STATUS_URL = "https://aviator-strategy-proxy-api-f1wq2z.5sc6y6-1.usa-e2.cloudhub.io/lokeshboodas/betStatus";
 
     let datasets = {
-        jetx: { rows: [], timer: null },
-        aviator: { rows: [], timer: null }
+        jetx: { rows: [], rawText: "", cachedBest: null }
     };
-
-    function switchDataSource(sourceKey) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
-
-        if (sourceKey === 'jetx') {
-            document.querySelectorAll('.tab-btn')[0].classList.add('active');
-            document.getElementById('page-jetx').classList.add('active');
-        } else {
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
-            document.getElementById('page-aviator').classList.add('active');
-        }
-    }
 
     function initTimeDropdowns(prefix) {
         const hours = Array.from({length: 24}, (_, i) => String(i).padStart(2, '0'));
@@ -503,12 +360,8 @@
 
     async function fetchCurrentBalance() {
         try {
-            const response = await fetch(`${CURRENT_BALANCE_URL}?_t=${Date.now()}`);
-            if (!response.ok) throw new Error("Network response failed");
-            await response.json();
-        } catch (err) {
-            console.error("Error fetching balance:", err);
-        }
+            await fetch(`${CURRENT_BALANCE_URL}?_t=${Date.now()}`);
+        } catch (err) {}
     }
 
     async function fetchBetStatus() {
@@ -516,28 +369,22 @@
             await fetch(`${BET_STATUS_URL}?_t=${Date.now()}`, {
                 headers: { 'ngrok-skip-browser-warning': 'true' }
             });
-        } catch (err) {
-            console.error("Error fetching bet status:", err);
-        }
+        } catch (err) {}
     }
 
-    async function fetchCSVData(url, key) {
-        const loadingIndicator = document.getElementById(`${key}-loadingIndicator`);
-        if (loadingIndicator) {
-            loadingIndicator.style.display = 'inline-block';
-            loadingIndicator.innerText = "Downloading logs...";
-        }
-
+    async function fetchCSVData(url, key, forceRecalculate = false) {
         try {
             const response = await fetch(`${url}?_t=${Date.now()}`, {
                 headers: { 'ngrok-skip-browser-warning': 'true' }
             });
-            if (!response.ok) throw new Error("Failed to fetch CSV logs");
-            processCSV(await response.text(), key);
-        } catch (err) {
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-            document.getElementById(`${key}-peakDrawdownTableBody`).innerHTML = `<tr><td colspan="10" class="no-data" style="color: var(--accent-red);">Connection error / Failed to load data</td></tr>`;
-        }
+            if (!response.ok) return;
+            const text = await response.text();
+            
+            if (text !== datasets[key].rawText || forceRecalculate) {
+                datasets[key].rawText = text;
+                processCSV(text, key, forceRecalculate);
+            }
+        } catch (err) {}
     }
 
     function convertTo24HourFormat(timeStr) {
@@ -573,7 +420,7 @@
         return `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
     }
 
-    function processCSV(csvText, key) {
+    function processCSV(csvText, key, forceRecalculate) {
         const lines = csvText.trim().split('\n').filter(l => l.trim().length > 0);
         const rows = lines.length > 0 && lines[0].toLowerCase().includes('date') ? lines.slice(1) : lines;
 
@@ -600,17 +447,18 @@
             }
         });
 
-        runCalculations(key);
+        runCalculations(key, forceRecalculate);
     }
 
-    function scheduleCalculation(key) {
+    function manualRunAnalysis(key) {
         const indicator = document.getElementById(`${key}-loadingIndicator`);
         if (indicator) {
             indicator.style.display = 'inline-block';
-            indicator.innerText = "Calculating...";
         }
-        if (datasets[key].timer) clearTimeout(datasets[key].timer);
-        datasets[key].timer = setTimeout(() => { runCalculations(key); }, 150);
+        setTimeout(() => {
+            fetchCSVData(JETX_CSV_URL, key, true);
+            if (indicator) indicator.style.display = 'none';
+        }, 10);
     }
 
     function resetTimeFilter(key) {
@@ -620,7 +468,7 @@
         document.getElementById(`${key}-toHour`).value = "23";
         document.getElementById(`${key}-toMinute`).value = "59";
         document.getElementById(`${key}-toSecond`).value = "59";
-        scheduleCalculation(key);
+        manualRunAnalysis(key);
     }
 
     function parseTimeToSeconds(timeStr) {
@@ -634,7 +482,7 @@
         }
     }
 
-    function runCalculations(key) {
+    function runCalculations(key, forceRecalculate = false) {
         const userBet1 = parseFloat(document.getElementById(`${key}-bet1Input`).value) || 0;
         const userBet2 = parseFloat(document.getElementById(`${key}-bet2Input`).value) || 0;
         const userBet3 = parseFloat(document.getElementById(`${key}-bet3Input`).value) || 0;
@@ -656,7 +504,6 @@
         let uniqueDates = Object.keys(dateMap);
         if (uniqueDates.length === 0) {
             document.getElementById(`${key}-peakDrawdownTableBody`).innerHTML = `<tr><td colspan="10" class="no-data">No data found in range.</td></tr>`;
-            if (document.getElementById(`${key}-loadingIndicator`)) document.getElementById(`${key}-loadingIndicator`).style.display = 'none';
             return;
         }
 
@@ -669,51 +516,56 @@
             return parseDateObj(b) - parseDateObj(a);
         });
 
-        const multipliers = [1.5, 2, 3, 5, 10, 15, 20, 30, 50, 100];
-        let independentBest = null;
-        let highestPeakProfit = -Infinity;
+        // Use cached strategy layout if inputs haven't changed to ensure instant 3-second auto-refresh
+        let independentBest = datasets[key].cachedBest;
+        if (forceRecalculate || !independentBest) {
+            const multipliers = [1.5, 2, 3, 5, 10, 15, 20, 30, 50, 100];
+            let highestPeakProfit = -Infinity;
+            independentBest = { c1: 2, c2: 2, c3: 2, c4: 2, peakProfit: 0 };
 
-        for (let c1 of (userBet1 > 0 ? multipliers : [0])) {
-            for (let c2 of (userBet2 > 0 ? multipliers : [0])) {
-                for (let c3 of (userBet3 > 0 ? multipliers : [0])) {
-                    for (let c4 of (userBet4 > 0 ? multipliers : [0])) {
-                        let allPassed = true;
-                        let minPeakOnAnyDay = Infinity;
+            for (let c1 of (userBet1 > 0 ? multipliers : [0])) {
+                for (let c2 of (userBet2 > 0 ? multipliers : [0])) {
+                    for (let c3 of (userBet3 > 0 ? multipliers : [0])) {
+                        for (let c4 of (userBet4 > 0 ? multipliers : [0])) {
+                            let allPassed = true;
+                            let minPeakOnAnyDay = Infinity;
 
-                        for (let d = 0; d < uniqueDates.length; d++) {
-                            const rowObjs = dateMap[uniqueDates[d]];
-                            let cumP = 0, peakP = -Infinity, maxLock = -Infinity;
+                            for (let d = 0; d < uniqueDates.length; d++) {
+                                const rowObjs = dateMap[uniqueDates[d]];
+                                let cumP = 0, peakP = -Infinity, maxLock = -Infinity;
 
-                            for (let m = 0; m < rowObjs.length; m++) {
-                                let rP = 0;
-                                const val = rowObjs[m].multiplier;
-                                
-                                if (userBet1 > 0) { rP -= userBet1; if (val >= c1) rP += userBet1 * c1; }
-                                if (userBet2 > 0) { rP -= userBet2; if (val >= c2) rP += userBet2 * c2; }
-                                if (userBet3 > 0) { rP -= userBet3; if (val >= c3) rP += userBet3 * c3; }
-                                if (userBet4 > 0) { rP -= userBet4; if (val >= c4) rP += userBet4 * c4; }
+                                for (let m = 0; m < rowObjs.length; m++) {
+                                    let rP = 0;
+                                    const val = rowObjs[m].multiplier;
+                                    
+                                    if (userBet1 > 0) { rP -= userBet1; if (val >= c1) rP += userBet1 * c1; }
+                                    if (userBet2 > 0) { rP -= userBet2; if (val >= c2) rP += userBet2 * c2; }
+                                    if (userBet3 > 0) { rP -= userBet3; if (val >= c3) rP += userBet3 * c3; }
+                                    if (userBet4 > 0) { rP -= userBet4; if (val >= c4) rP += userBet4 * c4; }
 
-                                cumP += rP;
-                                if (cumP > peakP) peakP = cumP;
-                                let lock = peakP * 0.85;
-                                if (lock > maxLock) maxLock = lock;
+                                    cumP += rP;
+                                    if (cumP > peakP) peakP = cumP;
+                                    let lock = peakP * 0.85;
+                                    if (lock > maxLock) maxLock = lock;
+                                }
+
+                                if (maxLock <= 0) { allPassed = false; break; }
+                                if (peakP < minPeakOnAnyDay) minPeakOnAnyDay = peakP;
                             }
 
-                            if (maxLock <= 0) { allPassed = false; break; }
-                            if (peakP < minPeakOnAnyDay) minPeakOnAnyDay = peakP;
-                        }
-
-                        if (allPassed && minPeakOnAnyDay > highestPeakProfit) {
-                            highestPeakProfit = minPeakOnAnyDay;
-                            independentBest = { c1, c2, c3, c4, peakProfit: minPeakOnAnyDay };
+                            if (allPassed && minPeakOnAnyDay > highestPeakProfit) {
+                                highestPeakProfit = minPeakOnAnyDay;
+                                independentBest = { c1, c2, c3, c4, peakProfit: minPeakOnAnyDay };
+                            }
                         }
                     }
                 }
             }
+            datasets[key].cachedBest = independentBest;
         }
 
         const strategyBoxElem = document.getElementById(`${key}-independentStrategyText`);
-        if (independentBest) {
+        if (independentBest && independentBest.peakProfit > 0) {
             let descParts = [];
             if (userBet1 > 0) descParts.push(`Bet 1 (${userBet1} @ ${independentBest.c1}x)`);
             if (userBet2 > 0) descParts.push(`Bet 2 (${userBet2} @ ${independentBest.c2}x)`);
@@ -935,20 +787,22 @@
         `;
 
         document.getElementById(`${key}-peakDrawdownTableBody`).innerHTML = tableHtml;
-        if (document.getElementById(`${key}-loadingIndicator`)) document.getElementById(`${key}-loadingIndicator`).style.display = 'none';
     }
 
-    // Initialization on window load
     window.addEventListener('DOMContentLoaded', () => {
         initTimeDropdowns('jetx');
-        initTimeDropdowns('aviator');
 
-        fetchCSVData(JETX_CSV_URL, 'jetx');
-        fetchCSVData(AVIATOR_CSV_URL, 'aviator');
-
+        // Initial heavy load with strategy search
+        fetchCSVData(JETX_CSV_URL, 'jetx', true);
         fetchCurrentBalance();
         fetchBetStatus();
-        setInterval(fetchCurrentBalance, 3000);
+
+        // High-speed lightweight polling every 3 seconds
+        setInterval(() => {
+            fetchCSVData(JETX_CSV_URL, 'jetx', false);
+            fetchCurrentBalance();
+            fetchBetStatus();
+        }, 3000);
     });
 </script>
 </body>
